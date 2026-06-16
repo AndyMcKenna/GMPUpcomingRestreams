@@ -33,6 +33,8 @@ body {
   font-size: 70px;
   margin: 0;
   padding: 0;
+  -webkit-text-stroke: 10px black;
+  paint-order: stroke fill;
 }
 </style>
 </head>
@@ -57,7 +59,7 @@ async function main() {
     const racer1 = cells[2].text.trim();
     const racer2 = cells[5].text.trim();
 
-    lines.push(`${date}  ${time}  ${racer1} vs ${racer2}`);
+    lines.push(`${date}  ${time} EDT  ${racer1} vs ${racer2}`);
     if (lines.length === 5) break;
   }
 
