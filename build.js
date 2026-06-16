@@ -33,7 +33,7 @@ body {
   font-size: 70px;
   margin: 0;
   padding: 0;
-  -webkit-text-stroke: 10px black;
+  -webkit-text-stroke: 3px black;
   paint-order: stroke fill;
 }
 </style>
