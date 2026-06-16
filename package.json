@@ -1,0 +1,10 @@
+{
+  "name": "gmp-upcoming-restreams",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "dependencies": {
+    "node-html-parser": "^6.1.13"
+  }
+}
