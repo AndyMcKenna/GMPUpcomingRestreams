@@ -18,6 +18,28 @@ function fetchHtml(url) {
   });
 }
 
+const HTML = (content) => `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+@font-face {
+  font-family: 'Hylia Serif Beta';
+  src: url('fonts/HyliaSerifBeta-Regular.otf') format('opentype');
+}
+body {
+  color: white;
+  font-family: 'Hylia Serif Beta', serif;
+  font-size: 256px;
+  margin: 0;
+  padding: 0;
+}
+pre { margin: 0; }
+</style>
+</head>
+<body><pre>${content}</pre></body>
+</html>`;
+
 async function main() {
   const html = await fetchHtml(SHEET_URL);
   const root = parse(html);
@@ -27,22 +49,22 @@ async function main() {
     const cells = row.querySelectorAll('td');
     if (cells.length < 9) continue;
 
-    const date = cells[0].text.trim();
+    const rawDate = cells[0].text.trim();
+    if (!rawDate || !/^\d+\/\d+\/\d{4}$/.test(rawDate) || !cells[8].text.trim()) continue;
+
+    const [month, day] = rawDate.split('/');
+    const date = `${month}/${day}`;
     const time = cells[1].text.trim();
     const racer1 = cells[2].text.trim();
     const racer2 = cells[5].text.trim();
-    const restreamer = cells[8].text.trim();
-
-    if (!date || !/^\d+\/\d+\/\d{4}$/.test(date) || !restreamer) continue;
 
     lines.push(`${date}  ${time}  ${racer1} vs ${racer2}`);
+    if (lines.length === 5) break;
   }
 
-  fs.mkdirSync('docs', { recursive: true });
-  fs.writeFileSync(
-    'docs/index.html',
-    `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><pre>\n${lines.join('\n')}\n</pre></body></html>`
-  );
+  fs.mkdirSync('docs/fonts', { recursive: true });
+  fs.copyFileSync('fonts/HyliaSerifBeta-Regular.otf', 'docs/fonts/HyliaSerifBeta-Regular.otf');
+  fs.writeFileSync('docs/index.html', HTML(lines.join('\n')));
 
   console.log(`Built ${lines.length} restream entries`);
 }
