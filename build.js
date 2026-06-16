@@ -62,9 +62,13 @@ async function main() {
     if (lines.length === 5) break;
   }
 
+  const content = lines.length
+    ? lines.join('\n')
+    : 'Check the Discord for the schedule\nand upcoming matches';
+
   fs.mkdirSync('docs/fonts', { recursive: true });
   fs.copyFileSync('fonts/HyliaSerifBeta-Regular.otf', 'docs/fonts/HyliaSerifBeta-Regular.otf');
-  fs.writeFileSync('docs/index.html', HTML(lines.join('\n')));
+  fs.writeFileSync('docs/index.html', HTML(content));
 
   console.log(`Built ${lines.length} restream entries`);
 }
