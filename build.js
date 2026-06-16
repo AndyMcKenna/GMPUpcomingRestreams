@@ -30,14 +30,13 @@ const HTML = (content) => `<!DOCTYPE html>
 body {
   color: white;
   font-family: 'Hylia Serif Beta', serif;
-  font-size: 256px;
+  font-size: 70px;
   margin: 0;
   padding: 0;
 }
-pre { margin: 0; }
 </style>
 </head>
-<body><pre>${content}</pre></body>
+<body>${content}</body>
 </html>`;
 
 async function main() {
@@ -63,8 +62,8 @@ async function main() {
   }
 
   const content = lines.length
-    ? lines.join('\n')
-    : 'Check the Discord for the schedule\nand upcoming matches';
+    ? lines.join('<br>')
+    : 'Check the Discord for the schedule<br>and upcoming matches';
 
   fs.mkdirSync('docs/fonts', { recursive: true });
   fs.copyFileSync('fonts/HyliaSerifBeta-Regular.otf', 'docs/fonts/HyliaSerifBeta-Regular.otf');
