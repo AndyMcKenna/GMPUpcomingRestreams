@@ -18,7 +18,7 @@ function fetchHtml(url) {
   });
 }
 
-const HTML = (content) => `<!DOCTYPE html>
+const HTML = (content, leftAlign = false) => `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -33,12 +33,25 @@ body {
   font-size: 70px;
   margin: 0;
   padding: 0;
-  -webkit-text-stroke: 3px black;
+  -webkit-text-stroke: 5px black;
   paint-order: stroke fill;
+}
+#container {
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+#title {
+  font-size: 100px;
 }
 </style>
 </head>
-<body>${content}</body>
+<body><div id="container"><div id="title">Upcoming Matches and Events</div><br>${leftAlign ? `<div style="display:inline-block;text-align:left">${content}</div>` : content}<br><br>Thank you for watching!</div></body>
 </html>`;
 
 async function main() {
@@ -70,6 +83,7 @@ async function main() {
   fs.mkdirSync('docs/fonts', { recursive: true });
   fs.copyFileSync('fonts/HyliaSerifBeta-Regular.otf', 'docs/fonts/HyliaSerifBeta-Regular.otf');
   fs.writeFileSync('docs/index.html', HTML(content));
+  fs.writeFileSync('docs/left.html', HTML(content, true));
 
   console.log(`Built ${lines.length} restream entries`);
 }
