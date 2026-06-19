@@ -54,10 +54,29 @@ body {
 <body><div id="container"><div id="title">Upcoming Matches and Events</div><br>${leftAlign ? `<div style="display:inline-block;text-align:left">${content}</div>` : content}<br><br>Thank you for watching!</div></body>
 </html>`;
 
+function parseEdtDateTime(dateStr, timeStr) {
+  const [month, day, year] = dateStr.split('/').map(Number);
+  const timeParts = timeStr.match(/^(\d+):(\d+)\s*(AM|PM)?$/i);
+  if (!timeParts) return null;
+
+  let hours = parseInt(timeParts[1]);
+  const minutes = parseInt(timeParts[2]);
+  const meridiem = timeParts[3];
+
+  if (meridiem) {
+    if (meridiem.toUpperCase() === 'PM' && hours !== 12) hours += 12;
+    if (meridiem.toUpperCase() === 'AM' && hours === 12) hours = 0;
+  }
+
+  // EDT is UTC-4
+  return new Date(Date.UTC(year, month - 1, day, hours + 4, minutes));
+}
+
 async function main() {
   const html = await fetchHtml(SHEET_URL);
   const root = parse(html);
 
+  const now = new Date();
   const lines = [];
   for (const row of root.querySelectorAll('tbody tr')) {
     const cells = row.querySelectorAll('td');
@@ -69,6 +88,9 @@ async function main() {
     const [month, day] = rawDate.split('/');
     const date = `${month}/${day}`;
     const time = cells[1].text.trim();
+
+    const eventDate = parseEdtDateTime(rawDate, time);
+    if (eventDate && eventDate < now) continue;
     const racer1 = cells[2].text.trim();
     const racer2 = cells[5].text.trim();
 
